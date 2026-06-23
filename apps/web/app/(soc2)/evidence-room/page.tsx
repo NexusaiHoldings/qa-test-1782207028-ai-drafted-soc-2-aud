@@ -16,7 +16,7 @@ async function handleCreateExport(formData: FormData): Promise<void> {
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
-  const orgId = (user as Record<string, unknown>).orgId as string | undefined;
+  const orgId = (user as unknown as Record<string, unknown>).orgId as string | undefined;
   if (!orgId) throw new Error("No organisation found for session user.");
 
   await createEvidenceExport(user.id, orgId);
@@ -86,7 +86,7 @@ export default async function EvidenceRoomPage(): Promise<JSX.Element> {
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
-  const orgId = (user as Record<string, unknown>).orgId as string | undefined;
+  const orgId = (user as unknown as Record<string, unknown>).orgId as string | undefined;
 
   const [preflight, exports] = orgId
     ? await Promise.all([getPreflightStatus(orgId), getEvidenceExports(orgId)])
