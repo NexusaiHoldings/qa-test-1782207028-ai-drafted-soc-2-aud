@@ -25,6 +25,7 @@
 
 import type { HandlerContext, HandlerResult } from "@nexus/identity-and-access";
 import { handleIngestAwsConfigSnapshot } from "./ingest_aws_config_snapshot";
+import { handleGenerateSoc2PolicyDraft } from "./generate_soc2_policy_draft";
 
 type Args = Record<string, unknown>;
 
@@ -33,4 +34,5 @@ export const DOMAIN_DISPATCH: Record<
   (ctx: HandlerContext, args: Args) => Promise<HandlerResult>
 > = {
   ingest_aws_config_snapshot: (ctx, a) => handleIngestAwsConfigSnapshot(ctx, a),
+  generate_soc2_policy_draft: (ctx, a) => handleGenerateSoc2PolicyDraft(ctx, a),
 };
