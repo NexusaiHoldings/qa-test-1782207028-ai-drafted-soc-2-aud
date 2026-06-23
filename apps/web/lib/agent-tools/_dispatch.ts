@@ -24,6 +24,10 @@
  */
 
 import type { HandlerContext, HandlerResult } from "@nexus/identity-and-access";
+import { handleIngestAwsConfigSnapshot } from "./ingest_aws_config_snapshot";
+import { handleGenerateSoc2PolicyDraft } from "./generate_soc2_policy_draft";
+import { handleRunControlGapAnalysis } from "./run_control_gap_analysis";
+import { handleExportAuditorEvidencePackage } from "./export_auditor_evidence_package";
 
 type Args = Record<string, unknown>;
 
@@ -31,5 +35,8 @@ export const DOMAIN_DISPATCH: Record<
   string,
   (ctx: HandlerContext, args: Args) => Promise<HandlerResult>
 > = {
-  // Build agent appends entries here per CTO-declared new_domain_tool.
+  ingest_aws_config_snapshot: (ctx, a) => handleIngestAwsConfigSnapshot(ctx, a),
+  generate_soc2_policy_draft: (ctx, a) => handleGenerateSoc2PolicyDraft(ctx, a),
+  run_control_gap_analysis: (ctx, a) => handleRunControlGapAnalysis(ctx, a),
+  export_auditor_evidence_package: (ctx, a) => handleExportAuditorEvidencePackage(ctx, a),
 };
