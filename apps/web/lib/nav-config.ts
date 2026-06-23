@@ -1,63 +1,53 @@
-/**
- * Top Navigation Configuration — substrate-topnav-001 (2026-05-24).
- *
- * Substrate ships with one nav entry (Home). Each portfolio company's
- * coding pipeline extends this file via F1-001 (per CTO mvp_scope —
- * cto-prompt-nav-requirement-001) to add links to the company's
- * specific feature pages.
- *
- * The substrate's TopNav component reads PRIMARY_NAV_LINKS and renders
- * them in the order declared.
- *
- * Convention:
- *   - Always keep Home as the first entry.
- *   - Group related pages with NavGroup (admin, account, etc.).
- *   - Use relative paths (Next.js route group parens collapse out of
- *     the URL — e.g. apps/web/app/(domain)/configure/page.tsx serves
- *     at /configure).
- *   - Server-only data; no client JS bundled from this file.
- */
-
-export type NavLink = {
-  /** URL path (without route-group parens). */
-  href: string;
-  /** Visible label. */
-  label: string;
-};
-
-export type NavGroup = {
-  /** Group label (e.g. "Account", "Admin"). */
-  label: string;
-  /** Child links shown inline (flat) inside the group. */
-  links: NavLink[];
-};
-
-export type NavConfig = {
-  primary: NavLink[];
-  groups: NavGroup[];
-};
-
-/**
- * Default substrate configuration: just Home. Agents extending this
- * file should preserve Home as the first entry and append the
- * company-specific paths AFTER it.
- *
- * Example extension by F1-001:
- *   primary: [
- *     { href: "/", label: "Home" },
- *     { href: "/configure", label: "Configure" },
- *     { href: "/shop", label: "Shop" },
- *   ],
- *   groups: [
- *     { label: "Account", links: [
- *       { href: "/account/tier", label: "Tier" },
- *       { href: "/account/reorders", label: "Reorders" },
- *     ]},
- *   ],
- */
-export const NAV_CONFIG: NavConfig = {
+export const NAV_CONFIG = {
   primary: [
-    { href: "/", label: "Home" },
+    { label: "Home", href: "/" },
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Connectors", href: "/connectors" },
+    { label: "Policies", href: "/policies" },
+    { label: "Controls", href: "/controls" },
+    { label: "Gaps", href: "/gaps" },
+    { label: "Evidence Room", href: "/evidence-room" },
   ],
-  groups: [],
-};
+  groups: [
+    {
+      title: "Audit Readiness",
+      links: [
+        {
+          label: "Audit Readiness Dashboard",
+          href: "/dashboard",
+          description: "Monitor readiness status, control coverage, and auditor milestones.",
+        },
+        {
+          label: "Gap Analysis Report",
+          href: "/gaps",
+          description: "Review identified gaps and track remediation progress.",
+        },
+        {
+          label: "Control Evidence Mapper",
+          href: "/controls",
+          description: "Link controls to evidence and ensure coverage.",
+        },
+        {
+          label: "Auditor Evidence Room",
+          href: "/evidence-room",
+          description: "Provide auditors with curated, review-ready documentation.",
+        },
+      ],
+    },
+    {
+      title: "Implementation",
+      links: [
+        {
+          label: "Cloud Connector Setup",
+          href: "/connectors",
+          description: "Configure and monitor integrations with cloud services.",
+        },
+        {
+          label: "Policy Document Suite",
+          href: "/policies",
+          description: "Draft, review, and publish compliance policies.",
+        },
+      ],
+    },
+  ],
+} as const;
