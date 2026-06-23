@@ -174,7 +174,7 @@ async function fetchInfrastructureContext(
   ctx: HandlerContext,
   orgId: string,
 ): Promise<{ snapshots: InfraSnapshot[]; artifacts: EvidenceArtifact[] }> {
-  const snapshotResult = await ctx.db.execute(
+  const snapshotRows = await ctx.db.query(
     `SELECT account_id, region, rule_count, compliant_count, non_compliant_count, fetched_at
      FROM aws_config_snapshots
      WHERE org_id = $1::uuid
@@ -183,7 +183,7 @@ async function fetchInfrastructureContext(
     orgId,
   );
 
-  const artifactResult = await ctx.db.execute(
+  const artifactRows = await ctx.db.query(
     `SELECT control_id, rule_name, compliance_type
      FROM soc2_evidence_artifacts
      WHERE org_id = $1::uuid
@@ -192,13 +192,7 @@ async function fetchInfrastructureContext(
     orgId,
   );
 
-  const toRows = (res: unknown): Record<string, unknown>[] => {
-    if (Array.isArray(res)) return res as Record<string, unknown>[];
-    const r = res as { rows?: unknown[] };
-    return Array.isArray(r?.rows) ? (r.rows as Record<string, unknown>[]) : [];
-  };
-
-  const snapshots: InfraSnapshot[] = toRows(snapshotResult).map((row) => ({
+  const snapshots: InfraSnapshot[] = snapshotRows.map((row) => ({
     account_id: String(row.account_id ?? ""),
     region: String(row.region ?? ""),
     rule_count: Number(row.rule_count ?? 0),
@@ -207,7 +201,7 @@ async function fetchInfrastructureContext(
     fetched_at: String(row.fetched_at ?? ""),
   }));
 
-  const artifacts: EvidenceArtifact[] = toRows(artifactResult).map((row) => ({
+  const artifacts: EvidenceArtifact[] = artifactRows.map((row) => ({
     control_id: String(row.control_id ?? ""),
     rule_name: String(row.rule_name ?? ""),
     compliance_type: String(row.compliance_type ?? ""),
@@ -280,7 +274,7 @@ export async function handleGenerateSoc2PolicyDraft(
   // Skip generation if an active draft already exists and regeneration is not forced
   if (!forceRegenerate && auditProjectId) {
     try {
-      const existing = await ctx.db.execute(
+      const existingRows = await ctx.db.query(
         `SELECT id, generated_at FROM soc2_policy_drafts
          WHERE org_id = $1::uuid AND audit_project_id = $2::uuid AND status = 'active'
          ORDER BY generated_at DESC
@@ -288,11 +282,8 @@ export async function handleGenerateSoc2PolicyDraft(
         orgId,
         auditProjectId,
       );
-      const rows = Array.isArray(existing)
-        ? existing
-        : ((existing as { rows?: unknown[] }).rows ?? []);
-      if (Array.isArray(rows) && rows.length > 0) {
-        const row = rows[0] as Record<string, unknown>;
+      if (existingRows.length > 0) {
+        const row = existingRows[0];
         return {
           status: 200,
           body: {
