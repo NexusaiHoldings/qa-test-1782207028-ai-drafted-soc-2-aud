@@ -26,6 +26,7 @@
 import type { HandlerContext, HandlerResult } from "@nexus/identity-and-access";
 import { handleIngestAwsConfigSnapshot } from "./ingest_aws_config_snapshot";
 import { handleGenerateSoc2PolicyDraft } from "./generate_soc2_policy_draft";
+import { handleRunControlGapAnalysis } from "./run_control_gap_analysis";
 
 type Args = Record<string, unknown>;
 
@@ -35,4 +36,5 @@ export const DOMAIN_DISPATCH: Record<
 > = {
   ingest_aws_config_snapshot: (ctx, a) => handleIngestAwsConfigSnapshot(ctx, a),
   generate_soc2_policy_draft: (ctx, a) => handleGenerateSoc2PolicyDraft(ctx, a),
+  run_control_gap_analysis: (ctx, a) => handleRunControlGapAnalysis(ctx, a),
 };
