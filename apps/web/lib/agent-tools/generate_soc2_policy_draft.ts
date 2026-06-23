@@ -214,7 +214,9 @@ function parsePolicySections(
   llmContent: string,
   sectionsConfig: typeof SOC2_POLICY_SECTIONS,
 ): PolicySection[] {
-  const configMap = new Map(sectionsConfig.map((s) => [s.id, s]));
+  const configMap = new Map<string, (typeof SOC2_POLICY_SECTIONS)[number]>(
+    sectionsConfig.map((s) => [s.id, s]),
+  );
 
   let parsed: Array<{
     section_id: string;
