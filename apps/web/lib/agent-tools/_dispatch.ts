@@ -24,6 +24,7 @@
  */
 
 import type { HandlerContext, HandlerResult } from "@nexus/identity-and-access";
+import { handleIngestAwsConfigSnapshot } from "./ingest_aws_config_snapshot";
 
 type Args = Record<string, unknown>;
 
@@ -31,5 +32,5 @@ export const DOMAIN_DISPATCH: Record<
   string,
   (ctx: HandlerContext, args: Args) => Promise<HandlerResult>
 > = {
-  // Build agent appends entries here per CTO-declared new_domain_tool.
+  ingest_aws_config_snapshot: (ctx, a) => handleIngestAwsConfigSnapshot(ctx, a),
 };
